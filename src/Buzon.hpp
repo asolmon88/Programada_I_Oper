@@ -12,6 +12,7 @@
 // Constante que almacena el de carné.
 #define KEY 0xB97664
 #define MAX_LENGTH 60
+#define MAX_LENGTH_RESULT 5
 
 // Clase encargada de compartir mensajes entre procesos.
 class Buzon {

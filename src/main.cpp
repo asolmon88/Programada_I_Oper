@@ -13,7 +13,7 @@ using namespace std;
 int main() {
 	// Obtiene y divide nombres de archivos
 	Buzon buzon;
-	int files_count;
+	int files_count = 2;
 
   char file_name[MAX_LENGTH];
 	char result[MAX_LENGTH_RESULT];
@@ -25,7 +25,7 @@ int main() {
 	std::string path = "./files/";
 	// Generates a string based on name of file
 	for (const auto & entry : filesystem::directory_iterator(path)) {
-		files_count++;
+		++files_count;
 		string file_string = filesystem::path(entry.path()).stem().string();
 		// Converts string to char
 		for (int iterator = 0; iterator < NAME_FILE_SIZE; iterator++) {
@@ -40,11 +40,13 @@ int main() {
 		// Work
 		if(fork() == 0) {
 			buzon.recibir(&result[0]); // recibe nombre de file
-			string file_name_string = result;
-			cout << "Nombre del file: " << file_name_string << endl;
-			// Reader::check_errors(result); // procesa file
-			cout << "A file has been processed..." << endl;; // sale
-			exit(0);
+			if (result[0] == 'f') {
+				string file_name_string = result;
+				cout << "Nombre del file: " << file_name_string << endl;
+				// Reader::check_errors(result); // procesa file
+				cout << "A file has been processed..." << endl;; // sale
+				exit(0);
+			}
 		}
   }
 	buzon.destructor();

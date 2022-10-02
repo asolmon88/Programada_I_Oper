@@ -1,5 +1,5 @@
 compile: src/main.cpp
-	g++ -g -Wall -Wextra src/main.cpp src/Reader.cpp src/Buzon.cpp -o main
+	g++ -std=c++17 -g -Wall -Wextra src/main.cpp src/Reader.cpp src/Buzon.cpp -o main
 
 .PHONY: lint
 lint:

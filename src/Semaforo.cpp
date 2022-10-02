@@ -1,4 +1,4 @@
-#include "Semaforo.h"
+#include "Semaforo.hpp"
 
 // Método constructor de la clase.
 Semaforo::Semaforo(int valorInicial)

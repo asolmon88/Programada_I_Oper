@@ -1,10 +1,11 @@
 #include <sys/types.h>
 #include <filesystem>
-#include <iostream>
 #include <string.h>
 #include <stdio.h>
+#include <vector>
 #include "Buzon.hpp"
 #include "Reader.hpp"
+#include "Semaforo.hpp"
 
 using namespace std;
 
@@ -13,13 +14,16 @@ using namespace std;
 int main() {
 	// Obtiene y divide nombres de archivos
 	Buzon buzon;
-	int files_count = 2;
+	Semaforo sem(1);
+	vector<string> files;
+	int files_count = 0;
+	int total_errors = 0;
 
   char file_name[MAX_LENGTH];
-	char result[MAX_LENGTH_RESULT];
+	char current_error[5];
 	
 	memset(file_name,0, MAX_LENGTH);
-	memset(result,0, MAX_LENGTH_RESULT);
+	memset(current_error,0, 5);
 
 	/* SEND LIST OF FILES TO BUZON */
 	std::string path = "./files/";
@@ -31,7 +35,7 @@ int main() {
 		for (int iterator = 0; iterator < NAME_FILE_SIZE; iterator++) {
 			file_name[iterator] = file_string[iterator];
     }
-		buzon.enviar(&file_name[0]);
+		files.push_back(file_name);
 	}
 	cout << "A total of '" << files_count <<  "' files have been detected..." << endl;
 
@@ -39,16 +43,21 @@ int main() {
 	for(int i=0; i < files_count; i++) {
 		// Work
 		if(fork() == 0) {
-			buzon.recibir(&result[0]); // recibe nombre de file
-			if (result[0] == 'f') {
-				string file_name_string = result;
-				cout << "Nombre del file: " << file_name_string << endl;
-				// Reader::check_errors(result); // procesa file
-				cout << "A file has been processed..." << endl;; // sale
-				exit(0);
-			}
+			string my_file_name = files[i];
+			int errors = Reader::check_errors(my_file_name.c_str()); // procesa file
+			cout << "For file: " << my_file_name << ", " << errors << " errors were found" << endl;
+			string errors_char = to_string(errors);
+			sem.wait();
+			buzon.enviar((char*)errors_char.c_str());
+			sem.signal();
+			exit(0);
 		}
   }
-	buzon.destructor();
+	for (int i = 0; i < files_count; ++i) {
+		buzon.recibir(&current_error[0]);
+		total_errors += atoi(current_error);
+		memset(current_error,0, 5);
+	}
+	cout << "TOTAL ERRORS: " << total_errors << endl;
   return 0;
 }

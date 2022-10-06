@@ -2,6 +2,7 @@
 #include <stack>
 #include <string>
 #include <algorithm>
+#include <iostream>
 
 #include "Reader.hpp"
 
@@ -13,11 +14,12 @@ int Reader::check_errors(const char* filename) {
 
   string new_filename = filename;
 
-  new_filename = new_filename.substr(0, new_filename.find(".txt"));
   new_filename += "_Result.txt";
+  new_filename = "./Results/" + new_filename;
 
-  string filename_string = "./src/";
+  string filename_string = "./files/";
   filename_string += filename;
+  filename_string += ".txt";
 
   // filestream variables
   std::fstream file;

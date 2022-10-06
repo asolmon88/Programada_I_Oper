@@ -6,27 +6,29 @@
 #include <sys/sem.h>
 #include <errno.h>
 #include <stdio.h>
+#include <iostream>
+using namespace std;
 
 // Constante que almacena el de carné.
-#define KEY 0xB00000
+#define KEY_S 0xC06640
 
 // Clase encargada de informar a un proceso cuándo continuar su operación.
-class Semaforo{
-    public:
-       Semaforo(int valorInicial = 0);
-       void destructor();
-       void signal();
-       void wait();
+class Semaforo {
+  public:
+    Semaforo(int valorInicial = 0);
+    ~Semaforo();
+    void signal();
+    void wait();
 
-    protected:
-       int id;
+  protected:
+    int id;
 
-   // Estructura requerida por el semáforo.
-    union semun{
-        int val; 
-        struct semid_ds* buf;
-        unsigned short* array;
-        struct seminfo* __buf;
-    };
+  // Estructura requerida por el semáforo.
+  union semun {
+    int val; 
+    struct semid_ds* buf;
+    unsigned short* array;
+    struct seminfo* __buf;
+  };
 };
 #endif // SEMAFORO_H

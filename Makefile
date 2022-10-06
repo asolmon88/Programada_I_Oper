@@ -1,5 +1,5 @@
 compile: src/main.cpp
-	g++ -std=c++17 -g -Wall -Wextra src/main.cpp src/Reader.cpp src/Buzon.cpp -o main
+	g++ -std=c++17 -g -Wall -Wextra src/main.cpp src/Reader.cpp src/Buzon.cpp src/Semaforo.cpp -o main
 
 .PHONY: lint
 lint:
@@ -11,4 +11,4 @@ memcheck: main
 
 .PHONY: clean
 clean:
-	rm -f main *.txt
+	rm -f main Results/*.txt

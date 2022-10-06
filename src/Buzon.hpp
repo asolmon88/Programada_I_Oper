@@ -18,7 +18,7 @@
 class Buzon {
 public:
   Buzon();
-  void destructor();
+  ~Buzon();
   void enviar(char* mensaje);
   void recibir(char* mensaje);
 

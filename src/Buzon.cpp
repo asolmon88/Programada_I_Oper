@@ -6,7 +6,7 @@ Buzon::Buzon() {
 }
 
 // Método encargado de eliminar el buzón.
-void Buzon::destructor() {
+Buzon::~Buzon() {
     // struct msqid_ds str;
     // Eliminar el buzón con msgctl
     msgctl(this->id, IPC_RMID, 0);

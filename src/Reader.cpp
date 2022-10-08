@@ -15,7 +15,7 @@ int Reader::check_errors(const char* filename) {
   string new_filename = filename;
 
   new_filename += "_Result.txt";
-  new_filename = "./Results/" + new_filename;
+  new_filename = "./results/" + new_filename;
 
   string filename_string = "./files/";
   filename_string += filename;

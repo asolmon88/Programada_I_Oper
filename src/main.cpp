@@ -11,8 +11,7 @@ using namespace std;
 
 #define NAME_FILE_SIZE 5
 
-int main() {
-	// Obtiene y divide nombres de archivos
+int main(int argc, char *argv[]) {
 	Buzon buzon;
 	Semaforo sem(1);
 	vector<string> files;
@@ -25,18 +24,33 @@ int main() {
 	memset(file_name,0, MAX_LENGTH);
 	memset(current_error,0, 5);
 
-	/* SEND LIST OF FILES TO BUZON */
-	std::string path = "./files/";
-	// Generates a string based on name of file
-	for (const auto & entry : filesystem::directory_iterator(path)) {
-		++files_count;
-		string file_string = filesystem::path(entry.path()).stem().string();
-		// Converts string to char
-		for (int iterator = 0; iterator < NAME_FILE_SIZE; iterator++) {
-			file_name[iterator] = file_string[iterator];
-    }
-		files.push_back(file_name);
+	/* CREATES LIST OF FILES TO PROCESS */
+
+	/* CASE: Input through terminal */
+	cout << "Argument count: " << argc << endl;
+	if (argc > 1) {
+		for (int i = 0; i < argc - 1; i++) {
+			++files_count;
+			string temp_string = argv[i + 1];
+			temp_string = temp_string.substr(0, temp_string.length() - 4);
+			files.push_back(temp_string);
+		}
 	}
+	/* CASE: Input through directory */
+	else {
+		std::string path = "./files/";
+		// Generates a string based on name of file
+		for (const auto & entry : filesystem::directory_iterator(path)) {
+			++files_count;
+			string file_string = filesystem::path(entry.path()).stem().string();
+			// Converts string to char
+			for (int iterator = 0; iterator < NAME_FILE_SIZE; iterator++) {
+				file_name[iterator] = file_string[iterator];
+	    }
+			files.push_back(file_name);
+		}
+	}
+
 	cout << "A total of '" << files_count <<  "' files have been detected..." << endl;
 
 	/* CREATE CHILD PROCCESSES AND DISTRIBUTE WORK */
@@ -44,7 +58,7 @@ int main() {
 		// Work
 		if(fork() == 0) {
 			string my_file_name = files[i];
-			int errors = Reader::check_errors(my_file_name.c_str()); // procesa file
+			int errors = Reader::check_errors(my_file_name.c_str());
 			cout << "For file: " << my_file_name << ", " << errors << " errors were found" << endl;
 			string errors_char = to_string(errors);
 			sem.wait();
@@ -53,6 +67,8 @@ int main() {
 			exit(0);
 		}
   }
+
+	/* PRINTS GENERAL RESULT */
 	for (int i = 0; i < files_count; ++i) {
 		buzon.recibir(&current_error[0]);
 		total_errors += atoi(current_error);

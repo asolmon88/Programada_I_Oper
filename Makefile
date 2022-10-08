@@ -11,4 +11,4 @@ memcheck: main
 
 .PHONY: clean
 clean:
-	rm -f main Results/*.txt
+	rm -f main results/*.txt
